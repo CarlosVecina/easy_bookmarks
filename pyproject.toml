@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "easy-bookmark"
+version = "0.1.0"
+description = "Redefine your bookmarks"
+authors = ["CarlosVecina <carlosvecinatebar@gmail.com>", "Ana Barbero <anabarberocastejon@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+pandas = "^2.2.2"
+easyocr = "^1.7.1"
+openai = "^1.35.10"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
