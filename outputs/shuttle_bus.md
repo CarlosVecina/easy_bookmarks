@@ -1,78 +1,48 @@
-**Title**: Shuttle Bus Services and Snorkelling Trip by Run Gili's
+**Title**: Run Gili's Ticketing Service Information
 
-**Summary**: This note provides information on the shuttle bus services and snorkelling trip organized by Run Gili's. It details various destinations served, prices, and other annotations for each service.
+**Summary**: This note provides detailed information about the destinations, prices, and additional annotations for shuttle bus services offered by Run Gili's Ticketing Service. Contact details and booking information are also included.
 
 **Key Points**:
-- Run Gili's offers shuttle bus services to various destinations.
-- Prices vary depending on the destination.
-- Special annotations include minimum person requirements and FASTBOAT options.
-- Contact details for booking and additional information.
+- Run Gili's provides a shuttle bus service with various destination options.
+- Prices are listed in Indonesian Rupiah (IDR).
+- Additional annotations include minimum person requirements and fast boat options.
 
 **Detailed Notes**:
-
-### **Shuttle Bus Services**
+- **Contact Information**:
+  - **Phone Numbers**: 
+    - +6282146661125
+    - +6281907204467
+  - **Email**: Runbeachboy92@gmail.com
+  - **Website**: Rungilis.Bussnies.goggel.com
+    
+- **Shuttle Bus Services**:
+  | No | Destinations     | Price (IDR) | Annotation          |
+  |----|------------------|-------------|---------------------|
+  | 1  | Senggigi         | 95.000      |                     |
+  | 2  | Mataram          | 95.000      |                     |
+  | 3  | Lombok Airport   | 195.000     |                     |
+  | 4  | Kuta Lombok      | 195.000     |                     |
+  | 5  | Lembar           | 175.000     |                     |
+  | 6  | Senaru           | 250.000     | min 2 person        |
+  | 7  | Tete Batu        | 300.000     | min 2 person        |
+  | 8  | Padang Bai       | 350.000     | FASTBOAT            |
+  | 9  | Ubud, Sanur      | 400.000     | FASTBOAT            |
+  | 10 | Denpasar, Kuta   | 450.000     | FASTBOAT            |
+  | 11 | Sumbawa          | 300.000     |                     |
+  | 12 | Dompu            | 350.000     |                     |
+  | 13 | Bima             | 400.000     |                     |
+  | 14 | Sape             | 500.000     |                     |
+  | 15 | Labuan Bajo      | 550.000     |                     |
   
-  **Contact Information**:
-  - Phone: +6282146661125, +6281907204467
-  - Email: Runbeachboy92@gmail.com
-  - Website: Rungilis.Bussnies.goggel.com
-
-  **Destinations and Prices**:
-  - **1. Senggigi**
-    - **Price**: 95,000 IDR
-    - **Annotation**: None
-  - **2. Mataram**
-    - **Price**: 95,000 IDR
-    - **Annotation**: None
-  - **3. Lombok Airport**
-    - **Price**: 195,000 IDR
-    - **Annotation**: None
-  - **4. Kuta Lombok**
-    - **Price**: 195,000 IDR
-    - **Annotation**: None
-  - **5. Lembar**
-    - **Price**: 175,000 IDR
-    - **Annotation**: None
-  - **6. Senaru**
-    - **Price**: 250,000 IDR
-    - **Annotation**: None
-  - **7. Tete Batu**
-    - **Price**: 300,000 IDR
-    - **Annotation**: Minimum 2 persons required
-  - **8. Padang Bai**
-    - **Price**: 350,000 IDR
-    - **Annotation**: FASTBOAT
-  - **9. Ubud, Sanur**
-    - **Price**: 400,000 IDR
-    - **Annotation**: FASTBOAT
-  - **10. Denpasar, Kuta**
-    - **Price**: 450,000 IDR
-    - **Annotation**: FASTBOAT
-  - **11. Sumbawa**
-    - **Price**: 300,000 IDR
-    - **Annotation**: None
-  - **12. Dompu**
-    - **Price**: 350,000 IDR
-    - **Annotation**: None
-  - **13. Bima**
-    - **Price**: 400,000 IDR
-    - **Annotation**: None
-  - **14. Sape**
-    - **Price**: 500,000 IDR
-    - **Annotation**: None
-  - **15. Labuan Bajo**
-    - **Price**: 550,000 IDR
-    - **Annotation**: None
-
-**Additional Information**:
-- **Travel Schedule**: The shuttle bus leaves from Gili Meno at 08:00 AM.
-- **Booking**: Instructions and particularities are highlighted at the bottom of the service poster.
+- **Additional Information**:
+  - **Departure Time** from Gili Meno: 
+    - Leaves at 08:00 AM
+    - Booking required, indicated by the “Book Here” prompt.
 
 **To-Do List**:
-- [ ] Contact Run Gili's for specific travel inquiries.
-- [ ] Book tickets via the provided contact details.
+1. Confirm trip details and booking with Run Gili's Ticketing Service.
+2. Verify prices and any additional requirements or annotations.
+3. Plan departure from Gili Meno by coordinating with the given contact information.
 
 **References**:
-- Image provided for context and verification. 
-
-**Notes**: The information provided could be verified against the actual imagery for accuracy and completeness.
+- Physical image displaying detailed timetable and contact information (included in Original Image Description).

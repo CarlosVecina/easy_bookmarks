@@ -34,15 +34,39 @@ def extract_content_openai(llm_client: OpenAI, image_path: str, extract_text_ocr
 
 
 if __name__ == '__main__':
-    image_path = f"{INPUT_PATH}/shuttle_bus.jpeg"
+    import argparse
+
+    parser = argparse.ArgumentParser(description="Extract text from images and create notes using OpenAI's GPT-4.")
+
+    parser.add_argument(
+        "--input",
+        type=str,
+        default=None,
+        help="Path to the folder or to the image to process.",
+        required=False,
+    )
+
+    args = parser.parse_args()
+
+    if args.input is None:
+        raise ValueError("Please provide input file or input path.")
+    
+    if os.path.isfile(args.input):
+        list_input_paths: list[str] = [args.input]
+    else:
+        list_input_paths: list[str] = [f"{args.input}/{img}" for img in os.listdir(args.input)]
+    
 
     llm_client = OpenAI()
 
-    pic_main_lang = get_photo_main_language(llm_client=llm_client, image_path=image_path)
-    output_ocr = extract_text_ocr(image_path=image_path, lang=pic_main_lang)
-    final_output = extract_content_openai(llm_client=llm_client, image_path=image_path, extract_text_ocr=output_ocr)
+    for image_path in list_input_paths:
+        print(f"Processing image: {image_path}")
 
-    with open(f"{OUTPUT_PATH}/shuttle_bus.txt", "w") as text_file:
-        text_file.write(final_output)
+        pic_main_lang = get_photo_main_language(llm_client=llm_client, image_path=image_path)
+        output_ocr = extract_text_ocr(image_path=image_path, lang=pic_main_lang)
+        final_output = extract_content_openai(llm_client=llm_client, image_path=image_path, extract_text_ocr=output_ocr)
 
-    print("Text extracted and saved in output folder")
+        with open(f"{OUTPUT_PATH}/shuttle_bus.txt", "w") as text_file:
+            text_file.write(final_output)
+
+        print("Text extracted and saved in output folder!!")
