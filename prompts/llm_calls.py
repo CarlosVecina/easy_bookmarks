@@ -21,14 +21,20 @@ def create_get_lang_call(image_path: str) -> list[dict[str, str]]:
         },
     ]
 
-def create_pic2notes(image_path: str) -> list[dict[str, str]]:
+
+def create_pic2notes(
+    image_path: str, extract_text_ocr: list[str]
+) -> list[dict[str, str]]:
+    composed_prompt = f"""{prompt_pic2notes}. Here there is the text extracted by an OCR tool, 
+    in case you find it useful for the task: {extract_text_ocr}."""
+
     return [
         {
             "role": "user",
             "content": [
                 {
                     "type": "text",
-                    "text": prompt_pic2notes,
+                    "text": composed_prompt,
                 },
                 {
                     "type": "image_url",

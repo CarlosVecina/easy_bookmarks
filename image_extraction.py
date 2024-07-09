@@ -18,7 +18,7 @@ def get_photo_main_language(llm_client: OpenAI, image_path: str) -> AvailableLan
         messages=create_get_lang_call(image_path),
     )
 
-    return [AvailableLanguages(completion.choices[0].message.content)]
+    return [AvailableLanguages(completion.choices[0].message.content).value]
 
 
 def extract_text_ocr(image_path: str, lang: list[AvailableLanguages]) -> list[str]:
@@ -26,13 +26,11 @@ def extract_text_ocr(image_path: str, lang: list[AvailableLanguages]) -> list[st
     return reader.readtext(image_path, detail=0)
 
 def extract_content_openai(llm_client: OpenAI, image_path: str, extract_text_ocr: list[str]) -> str:
-    # TODO: Insert specific prompts
-    #completion = llm_client.chat.completions.create(
-    #    model="gpt-4o",
-    #    # messages=prompt_img_ocr(image_path),
-    #)
-    #return completion.choices[0].message.content
-    return " ".join(extract_text_ocr)
+    completion = llm_client.chat.completions.create(
+        model="gpt-4o",
+        messages=create_pic2notes(image_path, extract_text_ocr),
+    )
+    return completion.choices[0].message.content
 
 
 if __name__ == '__main__':
