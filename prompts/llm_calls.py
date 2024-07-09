@@ -2,7 +2,7 @@ from utils.img_converter import encode_image
 from prompts.prompts import prompt_get_languages, prompt_pic2notes
 
 
-def create_LLM_call(image_path: str) -> list[dict[str, str]]:
+def create_get_lang_call(image_path: str) -> list[dict[str, str]]:
     return [
         {
             "role": "user",
@@ -19,7 +19,10 @@ def create_LLM_call(image_path: str) -> list[dict[str, str]]:
                 },
             ],
         },
-    ][
+    ]
+
+def create_pic2notes(image_path: str) -> list[dict[str, str]]:
+    return [
         {
             "role": "user",
             "content": [

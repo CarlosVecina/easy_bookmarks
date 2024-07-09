@@ -3,7 +3,7 @@ import easyocr
 from openai import OpenAI
 from dotenv import load_dotenv
 
-from prompts.extract_img_lang import prompt_img_lang
+from prompts.llm_calls import create_get_lang_call, create_pic2notes
 from utils.available_languages import AvailableLanguages
 
 load_dotenv()
@@ -15,7 +15,7 @@ OUTPUT_PATH = './outputs'
 def get_photo_main_language(llm_client: OpenAI, image_path: str) -> AvailableLanguages:
     completion = llm_client.chat.completions.create(
         model="gpt-4o",
-        messages=prompt_img_lang(image_path),
+        messages=create_get_lang_call(image_path),
     )
 
     return [AvailableLanguages(completion.choices[0].message.content)]
