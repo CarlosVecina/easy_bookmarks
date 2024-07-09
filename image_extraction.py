@@ -66,7 +66,7 @@ if __name__ == '__main__':
         output_ocr = extract_text_ocr(image_path=image_path, lang=pic_main_lang)
         final_output = extract_content_openai(llm_client=llm_client, image_path=image_path, extract_text_ocr=output_ocr)
 
-        with open(f"{OUTPUT_PATH}/shuttle_bus.txt", "w") as text_file:
+        with open(f"{OUTPUT_PATH}/{image_path.split(".")[0]}.txt", "w") as text_file:
             text_file.write(final_output)
 
         print("Text extracted and saved in output folder!!")
