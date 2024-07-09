@@ -1,19 +1,15 @@
-from utils.available_languages import AvailableLanguages
 from utils.img_converter import encode_image
+from prompts.prompts import prompt_get_languages, prompt_pic2notes
 
 
 def prompt_img_lang(image_path: str) -> list[dict[str, str]]:
     return [
         {
-            "role": "system",
-            "content": "You are a poetic assistant, skilled in explaining complex programming concepts with creative flair.",
-        },
-        {
             "role": "user",
             "content": [
                 {
                     "type": "text",
-                    "text": f"Please, output the main language used in the text of the photo, just output a value between this options {AvailableLanguages.list_available_languages()}.",
+                    "text": prompt_get_languages,
                 },
                 {
                     "type": "image_url",
@@ -25,15 +21,11 @@ def prompt_img_lang(image_path: str) -> list[dict[str, str]]:
         },
     ][
         {
-            "role": "system",
-            "content": "You are a poetic assistant, skilled in explaining complex programming concepts with creative flair.",
-        },
-        {
             "role": "user",
             "content": [
                 {
                     "type": "text",
-                    "text": f"Please, output the main language used in the text of the photo, just output a value between this options {AvailableLanguages.list_available_languages()}.",
+                    "text": prompt_pic2notes,
                 },
                 {
                     "type": "image_url",
