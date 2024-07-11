@@ -5,8 +5,10 @@ description = "Redefine your bookmarks"
 authors = ["CarlosVecina <carlosvecinatebar@gmail.com>", "Ana Barbero <anabarberocastejon@gmail.com>"]
 readme = "README.md"
 
+packages = [{include = "pic2bookmark", from = "."}]
+
 [tool.poetry.dependencies]
-python = "^3.11"
+python = "~3.11"
 pandas = "^2.2.2"
 easyocr = "^1.7.1"
 openai = "^1.35.10"
