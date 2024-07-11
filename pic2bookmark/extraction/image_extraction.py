@@ -3,8 +3,8 @@ import easyocr
 from openai import OpenAI
 from dotenv import load_dotenv
 
-from prompts.llm_calls import create_get_lang_call, create_pic2notes
-from utils.available_languages import AvailableLanguages
+from pic2bookmark.prompts.llm_calls import create_get_lang_call, create_pic2notes
+from pic2bookmark.utils.available_languages import AvailableLanguages
 
 load_dotenv()
 
@@ -70,7 +70,7 @@ if __name__ == '__main__':
 
         final_output = main(llm_client, image_path)
 
-        with open(f"{OUTPUT_PATH}/{image_path.split(".")[0]}.txt", "w") as text_file:
+        with open(f"{OUTPUT_PATH}/{image_path.split('.')[0]}.txt", "w") as text_file:
             text_file.write(final_output)
 
         print("Text extracted and saved in output folder!!")
