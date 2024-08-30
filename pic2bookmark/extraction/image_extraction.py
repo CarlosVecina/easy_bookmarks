@@ -18,7 +18,7 @@ def get_photo_main_language(llm_client: OpenAI, image_path: str) -> AvailableLan
         messages=create_get_lang_call(image_path),
     )
 
-    return [AvailableLanguages(completion.choices[0].message.content).value]
+    return [AvailableLanguages(completion.choices[0].message.content.strip("'")).value]
 
 
 def extract_text_ocr(image_path: str, lang: list[AvailableLanguages]) -> list[str]:
