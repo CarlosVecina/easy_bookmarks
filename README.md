@@ -1,6 +1,6 @@
 # Easy Bookmarks 🔖🤖
 
-FOMO bookmark is over. Now you can easily cantralize and manage your bookmarks with AI. 
+FOMO bookmark mess is over! Now, you can easily centralize and manage your bookmarks with AI. 
 
 ## Overview
 
