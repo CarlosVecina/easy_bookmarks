@@ -3,8 +3,8 @@ import easyocr
 from openai import OpenAI
 from dotenv import load_dotenv
 
-from pic2bookmark.prompts.llm_calls import create_get_lang_call, create_pic2notes
-from pic2bookmark.utils.available_languages import AvailableLanguages
+from easy_bookmarks.integrations.pic2bookmark.prompts.llm_calls import create_get_lang_call, create_pic2notes
+from easy_bookmarks.integrations.pic2bookmark.utils.available_languages import AvailableLanguages
 
 load_dotenv()
 

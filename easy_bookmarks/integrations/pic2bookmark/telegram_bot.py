@@ -11,8 +11,8 @@ from telegram.ext import (
     filters,
 )
 
-from pic2bookmark.notion_uploader import NotionUploader
-from pic2bookmark.extraction.image_extraction import main
+from easy_bookmarks.integrations.pic2bookmark.notion_uploader import NotionUploader
+from easy_bookmarks.integrations.pic2bookmark.extraction.image_extraction import main
 from telegram.constants import ParseMode
 
 logging.basicConfig(

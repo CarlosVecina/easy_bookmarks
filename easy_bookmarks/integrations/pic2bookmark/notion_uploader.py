@@ -1,8 +1,6 @@
-import os
 from pydantic import BaseModel
 import requests
 import json
-from dotenv import load_dotenv
 
 
 class NotionUploader(BaseModel):

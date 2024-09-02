@@ -1,11 +1,11 @@
 [tool.poetry]
-name = "easy_bookmark"
+name = "easy_bookmarks"
 version = "0.1.0"
 description = "Redefine your bookmarks"
 authors = ["CarlosVecina <carlosvecinatebar@gmail.com>", "Ana Barbero <anabarberocastejon@gmail.com>"]
 readme = "README.md"
 
-packages = [{include = "easy_bookmark", from = "."}]
+packages = [{include = "easy_bookmarks", from = "."}]
 
 [tool.poetry.dependencies]
 python = "~3.11"
@@ -15,7 +15,7 @@ openai = "^1.35.10"
 python-dotenv = "^1.0.1"
 python-telegram-bot = "^21.3"
 requests = "^2.32.3"
-linkedin-api = "^2.2.0"
+linkedin-api = "2.2.0"
 
 
 [tool.poetry.group.dev.dependencies]
