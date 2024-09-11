@@ -1,6 +1,12 @@
 import sqlite3
-import pandas as pd
+import polars as pl
 from typing import Dict, Optional
+
+import logging
+
+# Configure logging
+log = logging.getLogger(__name__)
+
 
 class SQLiteStore:
     def __init__(self, db_path: str = 'bookmarks.db'):
@@ -9,17 +15,20 @@ class SQLiteStore:
         self.table_name = 'bookmarks'
     
     def create_table(self, columns: Dict[str, str]):
+        if not "uuid" in columns:
+            #columns["uuid"] = "String PRIMARY KEY AUTOINCREMENT NOT NULL"
+            log.warning("It is recommended to include a uuid column. Creating a autoincremental.")
         columns_with_types = ', '.join([f"{col} {dtype}" for col, dtype in columns.items()])
+        print(columns_with_types)
         self.cursor.execute(f'''
             CREATE TABLE IF NOT EXISTS {self.table_name} (
-                uuid INTEGER PRIMARY KEY AUTOINCREMENT,
                 {columns_with_types}
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             )
         ''')
         self.conn.commit()
 
-    def create_table_from_dataframe(self, df: pd.DataFrame):
+    def create_table_from_dataframe(self, df: pl.DataFrame):
         # Infer column types from DataFrame
         column_types = self._infer_column_types(df)
         
@@ -34,15 +43,15 @@ class SQLiteStore:
         ''')
         self.conn.commit()
 
-    def _infer_column_types(self, df: pd.DataFrame) -> Dict[str, str]:
+    def _infer_column_types(self, df: pl.DataFrame) -> Dict[str, str]:
         type_mapping = {
-            'object': 'TEXT',
-            'int64': 'INTEGER',
-            'float64': 'REAL',
-            'bool': 'INTEGER',
-            'datetime64': 'TIMESTAMP'
+            pl.Utf8: 'TEXT',
+            pl.Int64: 'INTEGER',
+            pl.Float64: 'REAL',
+            pl.Boolean: 'INTEGER',
+            pl.Datetime: 'TIMESTAMP'
         }
-        return {col: type_mapping.get(str(df[col].dtype), 'TEXT') for col in df.columns}
+        return {col: type_mapping.get(df[col].dtype, 'TEXT') for col in df.columns}
 
     def add_bookmark(self, bookmark_data: Dict):
         columns = ', '.join(bookmark_data.keys())
@@ -51,7 +60,7 @@ class SQLiteStore:
         self.cursor.execute(query, list(bookmark_data.values()))
         self.conn.commit()
 
-    def get_bookmarks(self, filters: Optional[Dict] = None) -> pd.DataFrame:
+    def get_bookmarks(self, filters: Optional[Dict] = None) -> pl.DataFrame:
         query = f"SELECT * FROM {self.table_name}"
         params = []
         if filters:
@@ -64,7 +73,7 @@ class SQLiteStore:
         self.cursor.execute(query, params)
         columns = [col[0] for col in self.cursor.description]
         data = self.cursor.fetchall()
-        return pd.DataFrame(data, columns=columns)
+        return pl.from_records(data, orient='row', schema=columns)
 
     def update_bookmark(self, bookmark_id: int, update_data: Dict):
         set_clause = ', '.join([f"{key} = ?" for key in update_data.keys()])
