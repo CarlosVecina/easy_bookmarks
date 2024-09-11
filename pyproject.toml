@@ -9,7 +9,6 @@ packages = [{include = "easy_bookmarks", from = "."}]
 
 [tool.poetry.dependencies]
 python = "~3.11"
-pandas = "^2.2.2"
 easyocr = "^1.7.1"
 openai = "^1.35.10"
 python-dotenv = "^1.0.1"
