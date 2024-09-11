@@ -124,7 +124,8 @@ class LinkedinIntegration(BaseModel, Linkedin):
 
         return df.select(["uuid", "source"], cs.all())
 
-    def _parse_linkedin_date(self, parts):
+    @staticmethod
+    def _parse_linkedin_date(parts):
         basic_map_date = {
             "m": "minutes",
             "h": "hours",
