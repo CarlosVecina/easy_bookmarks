@@ -16,7 +16,7 @@ class LinkedinIntegration(BaseModel, Linkedin):
         super().__init__(*args, **kwargs)
         Linkedin.__init__(self, *args, **kwargs)
 
-    def get_bookmarked_posts(self, limit=-1):
+    def get_bookmarked_posts(self, limit: int = -1) -> list[dict]:
         results = []
         pagination_token = None
         start = None
@@ -48,9 +48,9 @@ class LinkedinIntegration(BaseModel, Linkedin):
 
                 res = self._fetch(query)
 
-                post_list = res.json()["data"]["searchDashClustersByAll"][
-                    "elements"
-                ][0]["items"]
+                post_list = res.json()["data"]["searchDashClustersByAll"]["elements"][
+                    0
+                ]["items"]
 
                 if len(post_list) == 0:
                     break
@@ -64,16 +64,12 @@ class LinkedinIntegration(BaseModel, Linkedin):
                         "author_member_id": post["item"]["entityResult"][
                             "actorTrackingUrn"
                         ].split(":")[-1],
-                        "post_summary": post["item"]["entityResult"]["summary"][
-                            "text"
-                        ],
-                        "post_url": post["item"]["entityResult"][
-                            "navigationUrl"
-                        ],
+                        "post_summary": post["item"]["entityResult"]["summary"]["text"],
+                        "post_url": post["item"]["entityResult"]["navigationUrl"],
                         "post_activity_id": post["item"]["entityResult"][
                             "trackingUrn"
                         ].split(":")[-1],
-                        "post_date_info": post["item"]["entityResult"][
+                        "post_date_repost_info": post["item"]["entityResult"][
                             "secondarySubtitle"
                         ]["text"],
                     }
