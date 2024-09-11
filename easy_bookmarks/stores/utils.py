@@ -12,4 +12,4 @@ def generate_uuid(input_str: str) -> uuid.UUID:
 
     generated_uuid = uuid.UUID(hash_hex)
 
-    return generated_uuid
+    return str(generated_uuid)

@@ -1,9 +1,20 @@
-import time
+import datetime
 import random
+import re
+import time
 from typing import Any
+import logging
+
+import polars as pl
+import polars.selectors as cs
 
 from linkedin_api import Linkedin
 from pydantic import BaseModel
+
+from easy_bookmarks.stores.utils import generate_uuid
+
+
+logger = logging.getLogger(__name__)
 
 
 class LinkedinIntegration(BaseModel, Linkedin):
@@ -12,11 +23,13 @@ class LinkedinIntegration(BaseModel, Linkedin):
     client: Any | None = None
     logger: Any | None = None
 
+    source: str = "linkedin"
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         Linkedin.__init__(self, *args, **kwargs)
 
-    def get_bookmarked_posts(self, limit: int = -1) -> list[dict]:
+    def _get_bookmarked_posts(self, limit: int = -1) -> list[dict]:
         results = []
         pagination_token = None
         start = None
@@ -39,11 +52,7 @@ class LinkedinIntegration(BaseModel, Linkedin):
                     )
                 )
                 &queryId=voyagerSearchDashClusters.a2b606e8c1f58b3cf72fb5d54a2a57e7
-                """.replace(
-                    "\n", ""
-                ).replace(
-                    "  ", ""
-                )
+                """.replace("\n", "").replace("  ", "")
                 print(query)
 
                 res = self._fetch(query)
@@ -82,7 +91,66 @@ class LinkedinIntegration(BaseModel, Linkedin):
                 print(f"Total {len(results)} values retrieved")
 
                 time.sleep(random.randint(1, 3))
-        except:
+        except Exception as e:
+            logger.warning(f"Error fetching LinkedIn posts: {e}")
             return results
 
         return results
+
+    def get_bookmarked_df(self, limit: int = -1) -> pl.DataFrame:
+        posts = self._get_bookmarked_posts(limit)
+
+        df = pl.from_records(
+            posts, orient="row"
+        )  # , schema=self.get_bookmarked_posts(limit)[0].keys())
+
+        # Parse date
+        df = df.with_columns(
+            pl.col("post_date_repost_info")
+            .str.split(" • ")
+            .map_elements(self._parse_linkedin_date)
+            .alias("parsed_date")
+        ).drop(["post_date_repost_info"])
+
+        # Add source and id
+        df = df.with_columns(
+            pl.lit(self.source).alias("source"),
+        ).with_columns(
+            (pl.col("source") + pl.col("post_url"))
+            .map_elements(generate_uuid)
+            .cast(pl.Utf8)
+            .alias("uuid")
+        )
+
+        return df.select(["uuid", "source"], cs.all())
+
+    def _parse_linkedin_date(self, parts):
+        basic_map_date = {
+            "m": "minutes",
+            "h": "hours",
+            "d": "days",
+            "w": "weeks",
+        }
+        complex_map_date = {
+            "mo": ("weeks", 4),
+            "yr": ("weeks", 52),
+        }
+
+        list_match = [
+            match for part in parts if (match := re.match(r"(\d+)\s*(\w+)", part))
+        ]
+
+        if len(list_match) != 1:
+            return None
+
+        value, unit = list_match[0].groups()
+        unit = unit.rstrip("s")
+        if unit in basic_map_date.keys():
+            delta = datetime.timedelta(
+                **{basic_map_date[unit]: int(value)}
+            )  # return pd.Timestamp.now() - delta
+            return datetime.datetime.now().date() - delta
+        else:
+            complex_unit, multiplier = complex_map_date[unit]
+            delta = datetime.timedelta(**{complex_unit: int(value) * multiplier})
+            return datetime.datetime.now().date() - delta
