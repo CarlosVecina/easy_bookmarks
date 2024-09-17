@@ -16,6 +16,8 @@ python-telegram-bot = "^21.3"
 requests = "^2.32.3"
 linkedin-api = "2.2.0"
 adalflow = "^0.2.2"
+selenium = "^4.24.0"
+webdriver-manager = "^4.0.2"
 
 
 [tool.poetry.group.dev.dependencies]
