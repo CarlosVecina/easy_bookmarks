@@ -9,7 +9,7 @@ class SummaryGenerator(BaseDigestor):
     so he/she can catch up with the latest posts in his/her bookmarks.
     """
 
-    def summarize(self, text: str) -> str:
+    def run(self, text: str) -> str:
         generator = Generator(
             model_client=self.model_client,
             model_kwargs=self.model_kwargs,

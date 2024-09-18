@@ -11,7 +11,7 @@ class NewsletterGenerator(BaseDigestor):
     Each topic or category need to have a proper headline.
     """
 
-    def summarize(self, text: str) -> str:
+    def run(self, text: str) -> str:
         generator = Generator(
             model_client=self.model_client,
             model_kwargs=self.model_kwargs,
