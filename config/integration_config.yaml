@@ -1,0 +1,23 @@
+integrations:
+  linkedin:
+    n_posts: 10
+    username: $LINKEDIN_MAIL_REAL
+    password: $LINKEDIN_PASSWORD_REAL
+  PapersWithCode:
+    n_pages: 1
+
+
+store:
+  notion:
+    config:
+      token: $NOTION_TOKEN
+      base_parent_id: $NOTION_BASE_PARENT_ID
+    databases:
+      linkedin:
+        database_id: null
+        table_name: SocialMedia
+        key_field: "uuid"
+      PapersWithCode:
+        database_id: null
+        table_name: PapersWithCode
+        key_field: "title"
