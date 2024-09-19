@@ -1,6 +1,8 @@
 # Easy Bookmarks 🔖🤖
 
-FOMO bookmark mess is over! Now, you can easily centralize and manage your bookmarks with AI. Then create a your personal Newsletter or Podcast with the latest bookmarks and scrapped content you'v added.
+FOMO bookmark mess is over! Now, you can easily centralize and manage your bookmarks with AI.
+
+Then, **create your personal Newsletter or Podcast** with the latest bookmarks and scrapped content you've added.
 
 ## Overview
 
