@@ -4,3 +4,7 @@ run_images_folder:
 start_telegram_bot:
 	@echo "Starting telegram bot"
 	poetry run python easy_bookmarks/integrations/pic2bookmark/telegram_bot.py
+
+run:
+	@echo "Running CLI"
+	poetry run python -m easy_bookmarks.cli run --config config/integration_config.yaml
