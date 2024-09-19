@@ -13,8 +13,8 @@ class NewsletterGenerator(BaseDigestor):
 
     def run(self, text: str) -> str:
         generator = Generator(
-            model_client=self.model_client,
-            model_kwargs=self.model_kwargs,
+            model_client=self.llm_client,
+            model_kwargs=self.llm_kwargs,
             prompt_kwargs={"task_desc_str": self._task_desc_str},
             template=self._template,
         )

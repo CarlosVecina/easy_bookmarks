@@ -139,3 +139,27 @@ class NotionStore(BaseModel):
                 self.add_bookmark(row)
 
             time.sleep(time_sleep)
+
+    def get_bookmarks_df(self) -> pl.DataFrame:
+        response = self._notion.databases.query(database_id=self.database_id)
+        response_results = response.get("results")
+
+        data = []
+        for item in response_results:
+            row = {}
+            for k, v in item["properties"].items():
+                if "rich_text" in v and v["rich_text"]:
+                    row[k] = v["rich_text"][0]["text"]["content"]
+                elif "date" in v and v["date"]:
+                    row[k] = v["date"]["start"]
+                elif "title" in v and v["title"]:
+                    row[k] = v["title"][0]["text"]["content"]
+                elif "number" in v:
+                    row[k] = v["number"]
+                elif "checkbox" in v:
+                    row[k] = v["checkbox"]
+                else:
+                    row[k] = "Unknown type"
+            data.append(row)
+
+        return pl.DataFrame(data)
