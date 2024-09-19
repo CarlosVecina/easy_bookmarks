@@ -6,28 +6,51 @@ from typing import Any
 import logging
 
 import polars as pl
-import polars.selectors as cs
 
 from linkedin_api import Linkedin
-from pydantic import BaseModel
 
+from easy_bookmarks.integrations.base_integration import (
+    BaseBookmark,
+    BaseIntegration,
+    BaseListBookmarks,
+)
 from easy_bookmarks.stores.utils import generate_uuid
 
 
 logger = logging.getLogger(__name__)
 
 
-class LinkedinIntegration(BaseModel, Linkedin):
+class LinkedinBookmark(BaseBookmark):
+    author: str
+    author_catchline: str
+    author_member_id: str
+    post_summary: str
+    post_url: str
+    post_activity_id: str
+    parsed_date: datetime.datetime
+    source: str
+    uuid: str | None = None
+
+    uuid_fields: list[str] = ["source", "post_url"]
+
+
+class ListLinkedinBookmarks(BaseListBookmarks):
+    root: list[LinkedinBookmark]
+
+
+class LinkedinIntegration(BaseIntegration, Linkedin):
     username: str
     password: str
     client: Any | None = None
     logger: Any | None = None
 
+    n_posts: int | None = None
+
     source: str = "linkedin"
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        Linkedin.__init__(self, *args, **kwargs)
+        Linkedin.__init__(self, username=self.username, password=self.password)
 
     def _get_bookmarked_posts(self, limit: int = -1) -> list[dict]:
         results = []
@@ -97,7 +120,10 @@ class LinkedinIntegration(BaseModel, Linkedin):
 
         return results
 
-    def get_bookmarked_df(self, limit: int = -1) -> pl.DataFrame:
+    def get_bookmarks_df(self, limit: int | None = None) -> pl.DataFrame:
+        if limit is None:
+            limit = self.n_posts
+
         posts = self._get_bookmarked_posts(limit)
 
         df = pl.from_records(
@@ -115,14 +141,20 @@ class LinkedinIntegration(BaseModel, Linkedin):
         # Add source and id
         df = df.with_columns(
             pl.lit(self.source).alias("source"),
-        ).with_columns(
+        )
+        return df.with_columns(
             (pl.col("source") + pl.col("post_url"))
             .map_elements(generate_uuid)
             .cast(pl.Utf8)
             .alias("uuid")
         )
 
-        return df.select(["uuid", "source"], cs.all())
+    def get_bookmarks(self, limit: int | None = None) -> ListLinkedinBookmarks:
+        if limit is None:
+            limit = self.n_posts
+        posts = self._get_bookmarked_posts(limit)
+
+        return ListLinkedinBookmarks(posts)
 
     @staticmethod
     def _parse_linkedin_date(parts):

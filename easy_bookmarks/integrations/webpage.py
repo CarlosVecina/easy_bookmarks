@@ -1,13 +1,11 @@
 import datetime
 import logging
-from abc import ABC, abstractmethod
-from typing import Any
 
 import bs4
 import numpy as np
 import polars as pl
 from bs4 import BeautifulSoup
-from pydantic import BaseModel, RootModel, model_validator
+from pydantic import model_validator
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
@@ -16,12 +14,16 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 from webdriver_manager.chrome import ChromeDriverManager
 
-from easy_bookmarks.stores.utils import generate_uuid
+from easy_bookmarks.integrations.base_integration import (
+    BaseBookmark,
+    BaseIntegration,
+    BaseListBookmarks,
+)
 
 logger = logging.getLogger(__name__)
 
 
-class WebpageBookmark(BaseModel):
+class WebpageBookmark(BaseBookmark):
     url: str
     title: str
     description: str
@@ -29,20 +31,17 @@ class WebpageBookmark(BaseModel):
     extra_data: str | None = None
     uuid: str | None = None
 
-    def __init__(self, **data):
-        super().__init__(**data)
-        if not self.uuid:
-            self.uuid = generate_uuid(f"{self.url}{self.title}")
+    uuid_fields: list[str] = ["url", "title"]
 
 
-class ListWebpageBookmarks(RootModel):
+class ListWebpageBookmarks(BaseListBookmarks):
     root: list[WebpageBookmark]
 
     def to_polars_dataframe(self) -> pl.DataFrame:
         return pl.DataFrame([bookmark.model_dump() for bookmark in self.root])
 
 
-class BaseWebpageIntegration(ABC, BaseModel):
+class BaseWebpageIntegration(BaseIntegration):
     base_urls: list[str]
     driver: webdriver.Chrome | None = None
 
@@ -129,15 +128,13 @@ class BaseWebpageIntegration(ABC, BaseModel):
         self.driver.get(url)
         html = self.driver.page_source
         self.soup = BeautifulSoup(html, "html.parser")
-
-    @abstractmethod
-    def get_bookmarks(self) -> list[dict[str, Any]]: ...
+        ...
 
 
 class PwCWebpageIntegration(BaseWebpageIntegration):
     # trending research
     base_urls: list[str] = ["https://paperswithcode.com/"]
-    n_pages: int | None = None
+    n_pages: int | None = 5
 
     @model_validator(mode="after")
     def validate_coherence(self):
@@ -146,7 +143,7 @@ class PwCWebpageIntegration(BaseWebpageIntegration):
             and self.base_urls != ["https://paperswithcode.com/latest/"]
         ) and self.n_pages is not None:
             raise ValueError(
-                "`n_pages` must not be provided if `base_urls` is not the default value"
+                "`n_pages` must be None if `base_urls` is not the default value"
             )
         return self
 
@@ -194,3 +191,7 @@ class PwCWebpageIntegration(BaseWebpageIntegration):
             ):
                 bookmarks.append(self._compose_bookmark(element))
         return ListWebpageBookmarks(bookmarks)
+
+    def get_bookmarks_df(self) -> pl.DataFrame:
+        bookmarks = self.get_bookmarks()
+        return pl.from_records(bookmarks.model_dump())
