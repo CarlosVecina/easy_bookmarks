@@ -1,12 +1,13 @@
 import datetime
+import logging
+import time
+from itertools import islice
 from typing import Any
 
 import polars as pl
 from notion_client import Client
 from pydantic import BaseModel, SecretStr
 from pydantic_settings import BaseSettings, SettingsConfigDict
-
-import logging
 
 log = logging.getLogger(__name__)
 
@@ -31,7 +32,7 @@ class NotionStore(BaseModel):
         super().__init__(**data)
         self._notion = Client(auth=self.config.token.get_secret_value())
 
-    def _polars_to_notion_type(self, polars_type: str) -> str:
+    def _polars_to_notion_type(self, polars_type: pl.DataType) -> str:
         """Map Polars types to Notion property types."""
         type_mapping = {
             pl.String: "rich_text",
@@ -45,7 +46,14 @@ class NotionStore(BaseModel):
             pl.Struct: "rich_text",
             pl.Object: "rich_text",
         }
-        return type_mapping.get(polars_type, "text")
+        if polars_type not in type_mapping.keys():
+            default_type = "rich_text"
+            for key in list(type_mapping.keys()):
+                if isinstance(polars_type, key):
+                    return type_mapping[key]
+            return default_type
+
+        return type_mapping[polars_type]
 
     def create_table(self, fields: dict[str, str]) -> None:
         """
@@ -62,7 +70,6 @@ class NotionStore(BaseModel):
                 properties[field_name] = {"title": {}}
             else:
                 properties[field_name] = {notion_type: {}}
-        print(properties)
 
         response: dict[str, Any] = self._notion.databases.create(
             parent={"type": "page_id", "page_id": self.config.base_parent_id},
@@ -72,17 +79,20 @@ class NotionStore(BaseModel):
 
         self.database_id = response.get("id")
 
+        log.info(f"Database {self.table_name} created.")
+
         return response.get("id")
 
-    def add_bookmark(self, fields: dict[str, Any]) -> str:
+    def add_bookmark(self, bookmark_data: dict[str, Any]) -> str:
         MAX_NOTION_FIELD_LENGTH = 2000 - 200
 
         if not self.database_id:
-            log.warning("Database ID not set. Creating the table first.")
-            self.create_table(fields)
+            raise ValueError(
+                "Database ID not set. For creating new table from records use create_table or add_bookmark_from_df methods."
+            )
 
         properties = {}
-        for field_name, field_value in fields.items():
+        for field_name, field_value in bookmark_data.items():
             if field_name == self.key_field:
                 properties[field_name] = {
                     "title": [
@@ -115,11 +125,12 @@ class NotionStore(BaseModel):
         )
         return response.get("id")
 
-    def add_bookmark_from_df(
+    def add_bookmarks_from_df(
         self, df: pl.DataFrame, batch_size: int = 5, time_sleep: int = 2
-    ) -> str:
-        import time
-        from itertools import islice
+    ) -> None:
+        if self.database_id is None:
+            log.warning("Database ID not set. Creating a new table.")
+            self.create_table(dict(zip(df.columns, df.dtypes)))
 
         rows = df.iter_rows(named=True)
 
